@@ -7,9 +7,41 @@
     <title>Library</title>
 
     <link rel="stylesheet" href="styles/styles.css">
-    <script type="text/javascript" src="scripts/library.js"></script>
+    
 </head>
 <body>
-    
+    <header>
+        <h1 id="header-text">Library</h1>
+        <button id="button-modal-open">Add book</button>
+    </header>
+    <section id="section-library"  class="library">
+        <!--books to be added here-->
+    </section>
+
+    <section id="container-modal" class="modal">
+        <section id="container-add-book" class="modal-content">
+            <section>
+                <label for="input-title">Title:</label>
+                <input type="text" id="input-title" name="input-title">
+            </section>
+            <section>
+                <label for="input-author">Author:</label>
+                <input type="text" id="input-author" name="input-author">
+            </section>
+            <section>
+                <label for="input-pages">Pages in book:</label>
+                <input type="number" id="input-pages" name="input-pages">
+            </section>
+            <section>
+            <label for="input-read">Pages read:</label>
+            <input type="number" id="input-read" name="input-read">
+            </section>
+            <section>
+                <button id="button-add-book">Add to library</button>
+                <button id="button-cancel">Cancel</button>
+            </section>            
+        </section>
+    </section>
+    <script type="text/javascript" src="scripts/library.js"></script>
 </body>
 </html>
