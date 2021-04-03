@@ -12,7 +12,7 @@
 <body>
     <header>
         <h1 id="header-text">Library</h1>
-        <button id="button-modal-open">Add book</button>
+        <button id="button-modal-open" class="add-book">Add book</button>
     </header>
     <section id="section-library"  class="library">
         <!--books to be added here-->
@@ -20,7 +20,7 @@
 
     <section id="container-modal" class="modal">
         <section id="container-add-book" class="modal-content">
-            <section>
+            <section>               
                 <label for="input-title">Title:</label>
                 <input type="text" id="input-title" name="input-title">
             </section>
@@ -33,8 +33,8 @@
                 <input type="number" id="input-pages" name="input-pages">
             </section>
             <section>
-            <label for="input-read">Pages read:</label>
-            <input type="number" id="input-read" name="input-read">
+            <label for="input-read">Have you finished?:</label>
+            <input type="checkbox" id="input-read" name="input-read">
             </section>
             <section>
                 <button id="button-add-book">Add to library</button>

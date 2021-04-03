@@ -35,6 +35,7 @@ function displayLibrary() {
         
         let readElement = document.createElement("input");
         readElement.setAttribute("type", "checkbox");
+        readElement.setAttribute("id", "book-read-status");
         readElement.checked = myLibrary[book].read;
         readElement.addEventListener("change", updateReadStatus);
 
@@ -64,7 +65,7 @@ function addBook() {
     let titleInput = document.querySelector("#input-title").value;
     let authorInput = document.querySelector("#input-author").value;
     let pagesInput = document.querySelector("#input-pages").value;
-    let readInput = document.querySelector("#input-read").value;
+    let readInput = document.querySelector("#input-read").checked;
 
     /*
         add some validation
@@ -78,7 +79,7 @@ function addBook() {
     document.querySelector("#input-title").value = null;
     document.querySelector("#input-author").value = null;
     document.querySelector("#input-pages").value = null;
-    document.querySelector("#input-read").value = null;
+    document.querySelector("#input-read").checked = false;
     closeBookModal();
 
     // redisplay library
@@ -88,9 +89,13 @@ function addBook() {
 
 function updateReadStatus(e) {
     let bookId = e.target.parentElement.dataset.bookId;
-    console.log(e)
+
+    let readStatus = document.querySelectorAll("#book-read-status")[bookId].checked;
+   
+    myLibrary[bookId].setRead(readStatus);
 
 
+    displayLibrary();
 
 }
 
@@ -149,3 +154,8 @@ displayLibrary();
 
 
 
+/*
+1. addBook() -- add some validation
+2. use persistent storage (firebase / local) 
+3. tidy up html + css
+*/

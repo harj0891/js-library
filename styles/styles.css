@@ -4,12 +4,36 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;   
-    background-color:rgb(226, 226, 226);
+    background-color:rgb(161, 161, 161);
+    
 }
 
 
+
+
+.library {
+    /* background-color:rgb(49, 49, 49); */
+    background-color:#1e2227;
+    color:white;
+    display: inline-flex;
+    flex-wrap: wrap;
+    height:800px;
+    width:100%;
+    
+}
+
+.book {
+    /* background-color:rgb(109, 109, 109); */
+    background-color:#213624;
+    border: 1px solid black;
+    padding: 10px;
+    margin: 10px;
+    height:250px;
+    width:200px;
+}
+
 .modal {
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
     display: none;
     position: fixed;   
     left: 0;
@@ -21,8 +45,7 @@ body {
     z-index: 1;
 }
 
-.modal-content {
-    
+.modal-content {    
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
@@ -35,22 +58,6 @@ body {
     display: block;
 }
 
-.library {
-    background-color:rgb(71, 71, 71);
-    color:white;
-    display: inline-flex;
-    flex-wrap: wrap;
-    height:800px;
-    width:100%;
-    
+.add-book {
+    margin-bottom: 10px;
 }
-
-.book {
-    background-color:rgb(109, 109, 109);
-    border: 1px solid black;
-    padding: 10px;
-    margin: 10px;
-    height:250px;
-    width:200px;
-}
-
