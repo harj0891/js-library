@@ -4,21 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library</title>
+    <title>Reading List</title>
 
     <link rel="stylesheet" href="styles/styles.css">
     
 </head>
 <body>
     <header>
-        <h1 id="header-text">Library</h1>
+        <h1 id="header-text">Reading List</h1>
         <button id="button-modal-open" class="add-book">Add book</button>
     </header>
     <section id="section-library"  class="library">
         <!--books to be added here-->
     </section>
-
-    <section id="container-modal" class="modal">
+    <section id="container-modal-add" class="modal">
         <section id="container-add-book" class="modal-content">
             <section>               
                 <label for="input-title">Title:</label>
@@ -42,6 +41,18 @@
             </section>            
         </section>
     </section>
+    <section id="container-modal-remove" class="modal">
+        <section id="container-remove-book" class="modal-content">
+            <section>
+                <p>Are you sure?</p>
+            </section>
+            <section>
+                <button id="button-remove-confirm">Yes</button>
+                <button id="button-remove-cancel">No</button>
+            </section>    
+        </section>
+    </section>
+    
     <script type="text/javascript" src="scripts/library.js"></script>
 </body>
 </html>

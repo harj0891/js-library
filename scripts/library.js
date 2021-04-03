@@ -30,28 +30,41 @@ function displayLibrary() {
         authorElement.appendChild(authorValue);
 
         let pagesElement = document.createElement("p");
-        let pagesValue = document.createTextNode(myLibrary[book].pages);
+        let pagesValue = document.createTextNode(`${myLibrary[book].pages} pages`);
         pagesElement.appendChild(pagesValue);
         
+    
         let readElement = document.createElement("input");
-        readElement.setAttribute("type", "checkbox");
-        readElement.setAttribute("id", "book-read-status");
+        readElement.setAttribute("type", "checkbox");        
         readElement.checked = myLibrary[book].read;
+        readElement.setAttribute("id", "book-read-status");
         readElement.addEventListener("change", updateReadStatus);
+
+        let readSlider = document.createElement("span");
+        readSlider.setAttribute("class", "slider");
+        
+        let readLabel = document.createElement("label");
+        readLabel.setAttribute("class","switch");
+        readLabel.appendChild(readElement);
+        readLabel.appendChild(readSlider);
+
 
         let removeButton = document.createElement("button");
         removeButton.textContent = "Delete";
         removeButton.setAttribute("id", 'button-remove-book');        
-        removeButton.addEventListener("click", removeBook);
+        removeButton.addEventListener("click", openDeleteModal);
 
         let bookElement = document.createElement("section");
         bookElement.setAttribute("id", `libary-element-${bookIndex}`);
         bookElement.setAttribute("data-book-id", `${bookIndex}`);
         bookElement.setAttribute("class", "book");
+        if (!readElement.checked) {
+            bookElement.setAttribute("class", "book book-unread");
+        }
         bookElement.appendChild(titleElement);
         bookElement.appendChild(authorElement);
         bookElement.appendChild(pagesElement);
-        bookElement.appendChild(readElement);
+        bookElement.appendChild(readLabel);
         bookElement.appendChild(removeButton);
 
         SECTION_LIBRARY.appendChild(bookElement);            
@@ -88,20 +101,16 @@ function addBook() {
 }
 
 function updateReadStatus(e) {
-    let bookId = e.target.parentElement.dataset.bookId;
-
+    let bookId = e.target.parentElement.parentElement.dataset.bookId;
     let readStatus = document.querySelectorAll("#book-read-status")[bookId].checked;
    
     myLibrary[bookId].setRead(readStatus);
-
-
     displayLibrary();
 
 }
 
-function removeBook(e) {
-    let bookId = e.target.parentElement.dataset.bookId;
-
+function removeBook(bookId) {
+    // remove from library
     myLibrary.splice(bookId,1);
 
     // redisplay library
@@ -110,42 +119,68 @@ function removeBook(e) {
         
 
 function openBookModal() {
-    BOOK_MODAL.style.display = "block";
-    // BOOK_MODAL.addEventListener("click", closeBookModal);
-
-    window.onclick = function(event) {
-        if (event.target == BOOK_MODAL) {
-            closeBookModal();
-        }
-    }
+    ADD_BOOK_MODAL.style.display = "block";
 
     const ADD_BOOK_BUTTON = document.querySelector("#button-add-book");
     ADD_BOOK_BUTTON.addEventListener("click", addBook);
     
     const CANCEL_BUTTON = document.querySelector("#button-cancel");
     CANCEL_BUTTON.addEventListener("click", closeBookModal);
+
+    window.onclick = function(event) {
+        if (event.target == ADD_BOOK_MODAL) {
+            closeBookModal();
+        }
+    }
 }  
 
 function closeBookModal() {
-    BOOK_MODAL.style.display = "none";
+    ADD_BOOK_MODAL.style.display = "none";
 }
     
+
+function openDeleteModal(e) {
+    let bookId = e.target.parentElement.dataset.bookId;
+    REMOVE_BOOK_MODAL.style.display = "block";
+
+    const REMOVE_BOOK_BUTTON = document.querySelector("#button-remove-confirm");
+    REMOVE_BOOK_BUTTON.addEventListener("click", function() {
+        removeBook(bookId);
+        closeDeleteModal();
+    });
+    
+    const CANCEL_BUTTON = document.querySelector("#button-remove-cancel");
+    CANCEL_BUTTON.addEventListener("click", closeDeleteModal);
+    
+    window.onclick = function(event) {
+        if (event.target == REMOVE_BOOK_MODAL) {
+            closeDeleteModal();
+        }
+    }
+}
+
+function closeDeleteModal() {
+    REMOVE_BOOK_MODAL.style.display = "none";
+}
 
 
 let myLibrary = [];
 const SECTION_LIBRARY = document.querySelector("#section-library");
-const BOOK_MODAL= document.querySelector("#container-modal");
+const ADD_BOOK_MODAL= document.querySelector("#container-modal-add");
+const REMOVE_BOOK_MODAL= document.querySelector("#container-modal-remove");
 
 const OPEN_BOOK_MODAL = document.querySelector("#button-modal-open");
 OPEN_BOOK_MODAL.addEventListener("click", openBookModal);
 
 // START - mocking books
 let hobbit = new Book("The Hobbit", "Tolkien", 400, true);
-let lotrFellowship = new Book("LOTR - Fellowship of the ring", "Tolkien", 550, false);
+let lotrFellowship = new Book("LOTR - Fellowship of the ring", "Tolkien", 550, true);
 let hpPhilosopher = new Book("HP - Philosopher's Stone", "J. K. Rowling", 300, true);
+let hpChamber = new Book("HP - Philosopher's Stone", "J. K. Rowling", 300, false);
 myLibrary.push(hobbit);
 myLibrary.push(lotrFellowship);
 myLibrary.push(hpPhilosopher);
+myLibrary.push(hpChamber);
 displayLibrary();
 // END - mocking books
 
@@ -156,6 +191,8 @@ displayLibrary();
 
 /*
 1. addBook() -- add some validation
-2. use persistent storage (firebase / local) 
-3. tidy up html + css
+2. tidy up html + css
+    - add labels    
+    - button styles (add and delete)
+3. use persistent storage (firebase / local) 
 */
