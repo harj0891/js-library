@@ -18,7 +18,7 @@ function displayLibrary() {
     SECTION_LIBRARY.innerHTML = "";
     
     // load from local storage
-    let library = loadFromLocalStorage();
+    let library = loadFromStorage();
 
     // display each book
     for (book in library) {
@@ -91,7 +91,7 @@ function addBook() {
         //  add book to library
         let newBook = new Book (titleInput, authorInput, pagesInput, readInput)
         currentLibrary.push(newBook);
-        saveToLocalStorage();
+        saveToStorage();
 
         // redisplay library
         closeBookModal();
@@ -109,7 +109,7 @@ function updateReadStatus(e) {
     let readStatus = document.querySelectorAll("#book-read-status")[bookId].checked;
     
     currentLibrary[bookId].read = readStatus;
-    saveToLocalStorage();
+    saveToStorage();
 
     displayLibrary();
 }
@@ -119,12 +119,12 @@ function removeBook(bookId) {
     currentLibrary.splice(bookId,1);
 
     // redisplay library
-    saveToLocalStorage();
+    saveToStorage();
     displayLibrary();
 }
         
 
-function saveToLocalStorage() {
+function saveToStorage() {
     if (storageAvailable('localStorage')) {
         localStorage.library = JSON.stringify(currentLibrary);
     }  else {
@@ -133,7 +133,7 @@ function saveToLocalStorage() {
 }
 
 
-function loadFromLocalStorage() {
+function loadFromStorage() {
     // set empty array to hold objects if nothing already there
     let initLibrary = [];
 
@@ -154,7 +154,7 @@ function loadFromLocalStorage() {
             return JSON.parse(localStorage.library);
         } else {
             localStorage.library = JSON.stringify(initLibrary);
-            loadFromLocalStorage();
+            loadFromStorage();
         }
     } else {
         return initLibrary;
@@ -242,7 +242,7 @@ function storageAvailable(type) {
 }
 
 
-let currentLibrary = loadFromLocalStorage();
+let currentLibrary = loadFromStorage();
 
 const SECTION_LIBRARY = document.querySelector("#section-library");
 const ADD_BOOK_MODAL= document.querySelector("#container-modal-add");
