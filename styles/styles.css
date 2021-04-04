@@ -5,27 +5,29 @@
 body {
     font-family: Arial, Helvetica, sans-serif;   
     background-color:rgb(161, 161, 161);
-    
+    color: #1e2227;
+}
+
+.library-container {
+    background-color:#1e2227;
+    min-height: 85vh;
+    height:100%;
+    width:100%;
 }
 
 
-
-
 .library {
-    /* background-color:rgb(49, 49, 49); */
-    background-color:#1e2227;
     color:white;
     display: inline-flex;
     flex-wrap: wrap;
-    height:800px;
-    width:100%;
+    margin: 30px;
     
 }
 
 .book {
     background-color:#2d462e;
     border: 1px solid black;
-    padding: 10px;
+    padding: 10px ;
     margin: 10px;
     height:250px;
     width:200px;
@@ -33,6 +35,7 @@ body {
 
 .book-unread {
     background-color:#2d2e46;
+    
 }
 
 .modal {
@@ -62,7 +65,7 @@ body {
 }
 
 .add-book {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 
@@ -102,4 +105,10 @@ body {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
+  }
+
+
+  .error.mandatory-form {
+      color:red;
+      font-weight: bold;
   }

@@ -17,6 +17,10 @@ function displayLibrary() {
     // reset display
     SECTION_LIBRARY.innerHTML = "";
     
+    // save to storage
+    saveToLocalStorage();
+
+
     // display each book
     for (book in myLibrary) {
         let bookIndex = myLibrary.indexOf(myLibrary[book]);
@@ -79,24 +83,25 @@ function addBook() {
     let authorInput = document.querySelector("#input-author").value;
     let pagesInput = document.querySelector("#input-pages").value;
     let readInput = document.querySelector("#input-read").checked;
+    let errorSpan = document.querySelector("#form-error");
 
-    /*
-        add some validation
-    */
 
-    //  add book to library
-    let newBook = new Book (titleInput, authorInput, pagesInput, readInput)
-    myLibrary.push(newBook);
+    if (titleInput != "" && authorInput != "" && pagesInput != "") {
+        errorSpan.innerHTML = "";
 
-    // clear input fields
-    document.querySelector("#input-title").value = null;
-    document.querySelector("#input-author").value = null;
-    document.querySelector("#input-pages").value = null;
-    document.querySelector("#input-read").checked = false;
-    closeBookModal();
+        //  add book to library
+        let newBook = new Book (titleInput, authorInput, pagesInput, readInput)
+        myLibrary.push(newBook);
 
-    // redisplay library
-    displayLibrary();
+        closeBookModal();
+
+        // redisplay library
+        displayLibrary();
+    } else {
+        errorSpan.innerHTML = "Please enter your book";
+
+    }
+    
 
 }
 
@@ -118,6 +123,18 @@ function removeBook(bookId) {
 }
         
 
+function saveToLocalStorage() {
+    localStorage.library = myLibrary;
+
+}
+
+
+function loadFromLocalStorage() {
+    if (localStorage.library) {
+        myLibrary = localStorage.library;
+    }
+}
+
 function openBookModal() {
     ADD_BOOK_MODAL.style.display = "block";
 
@@ -134,7 +151,15 @@ function openBookModal() {
     }
 }  
 
+
 function closeBookModal() {
+    // clear input fields
+    document.querySelector("#input-title").value = null;
+    document.querySelector("#input-author").value = null;
+    document.querySelector("#input-pages").value = null;
+    document.querySelector("#input-read").checked = false;
+    document.querySelector("#form-error").innerHTML = "";
+
     ADD_BOOK_MODAL.style.display = "none";
 }
     
@@ -189,10 +214,15 @@ displayLibrary();
 
 
 
-/*
-1. addBook() -- add some validation
-2. tidy up html + css
-    - add labels    
-    - button styles (add and delete)
-3. use persistent storage (firebase / local) 
-*/
+/* ---- TO DO ---- *//*
+Use persistent storage 
+- local
+- firebase
+
+Tidy up html + css
+- book tile styles
+- button styles (add and delete)
+
+Use forms
+- have inline error messages
+*//* --------------- */
