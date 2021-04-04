@@ -6,7 +6,7 @@ class Book  {
         this.read = read;
     }
     info() {
-        return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read} pages read`;
+        return `${this.title} by ${this.author}, ${this.pages} pages. Current status: ${this.read}`;
     }
     setRead(status) {
         this.read = status;
@@ -17,30 +17,29 @@ function displayLibrary() {
     // reset display
     SECTION_LIBRARY.innerHTML = "";
     
-    // save to storage
-    saveToLocalStorage();
-
+    // load from local storage
+    let library = loadFromLocalStorage();
 
     // display each book
-    for (book in myLibrary) {
-        let bookIndex = myLibrary.indexOf(myLibrary[book]);
+    for (book in library) {
+        let bookIndex = library.indexOf(library[book]);
 
         let titleElement = document.createElement("p");
-        let titleValue = document.createTextNode(myLibrary[book].title);
+        let titleValue = document.createTextNode(library[book].title);
         titleElement.appendChild(titleValue);
 
         let authorElement = document.createElement("p");
-        let authorValue = document.createTextNode(myLibrary[book].author);
+        let authorValue = document.createTextNode(library[book].author);
         authorElement.appendChild(authorValue);
 
         let pagesElement = document.createElement("p");
-        let pagesValue = document.createTextNode(`${myLibrary[book].pages} pages`);
+        let pagesValue = document.createTextNode(`${library[book].pages} pages`);
         pagesElement.appendChild(pagesValue);
         
     
         let readElement = document.createElement("input");
         readElement.setAttribute("type", "checkbox");        
-        readElement.checked = myLibrary[book].read;
+        readElement.checked = library[book].read;
         readElement.setAttribute("id", "book-read-status");
         readElement.addEventListener("change", updateReadStatus);
 
@@ -91,11 +90,11 @@ function addBook() {
 
         //  add book to library
         let newBook = new Book (titleInput, authorInput, pagesInput, readInput)
-        myLibrary.push(newBook);
-
-        closeBookModal();
+        currentLibrary.push(newBook);
+        saveToLocalStorage();
 
         // redisplay library
+        closeBookModal();
         displayLibrary();
     } else {
         errorSpan.innerHTML = "Please enter your book";
@@ -108,31 +107,59 @@ function addBook() {
 function updateReadStatus(e) {
     let bookId = e.target.parentElement.parentElement.dataset.bookId;
     let readStatus = document.querySelectorAll("#book-read-status")[bookId].checked;
-   
-    myLibrary[bookId].setRead(readStatus);
-    displayLibrary();
+    
+    currentLibrary[bookId].read = readStatus;
+    saveToLocalStorage();
 
+    displayLibrary();
 }
 
 function removeBook(bookId) {
     // remove from library
-    myLibrary.splice(bookId,1);
+    currentLibrary.splice(bookId,1);
 
     // redisplay library
+    saveToLocalStorage();
     displayLibrary();
 }
         
 
 function saveToLocalStorage() {
-    localStorage.library = myLibrary;
-
+    if (storageAvailable('localStorage')) {
+        localStorage.library = JSON.stringify(currentLibrary);
+    }  else {
+        localSessionLibrary.push(book);
+    }
 }
 
 
 function loadFromLocalStorage() {
-    if (localStorage.library) {
-        myLibrary = localStorage.library;
+    // set empty array to hold objects if nothing already there
+    let initLibrary = [];
+
+    // START - mocking books
+    let hobbit = new Book("The Hobbit", "Tolkien", 400, true);
+    let lotrFellowship = new Book("LOTR - Fellowship of the ring", "Tolkien", 550, true);
+    let hpPhilosopher = new Book("HP - Philosopher's Stone", "J. K. Rowling", 300, true);
+    let hpChamber = new Book("HP - Philosopher's Stone", "J. K. Rowling", 300, false);
+    initLibrary.push(hobbit);
+    initLibrary.push(lotrFellowship);
+    initLibrary.push(hpPhilosopher);
+    initLibrary.push(hpChamber);
+    // END - mocking books
+
+
+    if (storageAvailable('localStorage')) {
+        if (localStorage.library) {            
+            return JSON.parse(localStorage.library);
+        } else {
+            localStorage.library = JSON.stringify(initLibrary);
+            loadFromLocalStorage();
+        }
+    } else {
+        return initLibrary;
     }
+    
 }
 
 function openBookModal() {
@@ -189,7 +216,34 @@ function closeDeleteModal() {
 }
 
 
-let myLibrary = [];
+function storageAvailable(type) {
+    let storage;
+    try {
+        storage = window[type];
+        let x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+    }
+}
+
+
+let currentLibrary = loadFromLocalStorage();
+
 const SECTION_LIBRARY = document.querySelector("#section-library");
 const ADD_BOOK_MODAL= document.querySelector("#container-modal-add");
 const REMOVE_BOOK_MODAL= document.querySelector("#container-modal-remove");
@@ -197,18 +251,8 @@ const REMOVE_BOOK_MODAL= document.querySelector("#container-modal-remove");
 const OPEN_BOOK_MODAL = document.querySelector("#button-modal-open");
 OPEN_BOOK_MODAL.addEventListener("click", openBookModal);
 
-// START - mocking books
-let hobbit = new Book("The Hobbit", "Tolkien", 400, true);
-let lotrFellowship = new Book("LOTR - Fellowship of the ring", "Tolkien", 550, true);
-let hpPhilosopher = new Book("HP - Philosopher's Stone", "J. K. Rowling", 300, true);
-let hpChamber = new Book("HP - Philosopher's Stone", "J. K. Rowling", 300, false);
-myLibrary.push(hobbit);
-myLibrary.push(lotrFellowship);
-myLibrary.push(hpPhilosopher);
-myLibrary.push(hpChamber);
-displayLibrary();
-// END - mocking books
 
+displayLibrary();
 
 
 
@@ -216,7 +260,6 @@ displayLibrary();
 
 /* ---- TO DO ---- *//*
 Use persistent storage 
-- local
 - firebase
 
 Tidy up html + css
