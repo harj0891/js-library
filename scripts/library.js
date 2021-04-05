@@ -1,3 +1,18 @@
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+var firebaseConfig = {
+    apiKey: "AIzaSyDSLiGFQkvvCNWpgfO9XGbmxfmyyES8qb8",
+    authDomain: "odin-project-library-dc003.firebaseapp.com",
+    projectId: "odin-project-library-dc003",
+    storageBucket: "odin-project-library-dc003.appspot.com",
+    messagingSenderId: "118159933627",
+    appId: "1:118159933627:web:6387830b9d61d7ae19e99e",
+    measurementId: "G-L4ZC1VFV3K"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
 class Book  {
     constructor(title, author, pages, read) {
         this.title = title;
@@ -125,11 +140,31 @@ function removeBook(bookId) {
         
 
 function saveToStorage() {
-    if (storageAvailable('localStorage')) {
+    if (useFirebase) {
+        // test
+    } else if (!useFirebase && storageAvailable('localStorage')) {
         localStorage.library = JSON.stringify(currentLibrary);
     }  else {
         localSessionLibrary.push(book);
     }
+}
+
+async function loadFromFirebase() {
+    let fbLibrary;
+        
+    firebaseDbRef.get().then(function(snap) {
+        
+        if (snap.exists()) {
+            
+            console.log(fbLibrary = snap.val());
+            
+        } else {
+            return fbLibrary = undefined;
+        }
+    }).catch(function(error) {
+        console.log(error);
+    });
+
 }
 
 
@@ -148,8 +183,18 @@ function loadFromStorage() {
     initLibrary.push(hpChamber);
     // END - mocking books
 
+    if (useFirebase) {
+        let fbLibrary = loadFromFirebase();
+        console.log(fbLibrary);
 
-    if (storageAvailable('localStorage')) {
+
+            // if (fbLibrary) {
+    //     return JSON.parse(fbLibrary);
+    // } else {
+    //     // save initLibrary to local storage
+    //     loadFromStorage();
+    // }
+    } else if (!useFirebase && storageAvailable('localStorage')) {
         if (localStorage.library) {            
             return JSON.parse(localStorage.library);
         } else {
@@ -240,6 +285,13 @@ function storageAvailable(type) {
             (storage && storage.length !== 0);
     }
 }
+
+
+// use firebase
+let useFirebase = false;
+const firebaseDbRef = firebase.database().ref().child('library');
+
+
 
 
 let currentLibrary = loadFromStorage();
